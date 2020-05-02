@@ -32,6 +32,7 @@ package com.raywenderlich.isell.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -80,8 +81,8 @@ class AddItemActivity : AppCompatActivity(),
     override fun afterTextChanged(s: Editable?) {}
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-      titleTextInput.error = null
-      priceTextInput.error = null
+        titleTextInput.error = null
+        priceTextInput.error = null
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -93,18 +94,18 @@ class AddItemActivity : AppCompatActivity(),
     }
 
     fun onClickAddItem(view: View) {
-
-      if(hasValidInput()){
-        val selectedCategory = categorySpinner.selectedItem as Category
-        DataProvider.addItem(Item(
-                imageId = imageFromCategory(selectedCategory),
-                title = titleEditText.text.toString(),
-                details = detailsEditText.text.toString(),
-                price = priceEditText.text.toString().toDouble(),
-                category = selectedCategory,
-                postedOn = System.currentTimeMillis())
-        )
-      }
+        if (hasValidInput()) {
+            val selectedCategory = categorySpinner.selectedItem as Category
+            DataProvider.addItem(Item(
+                    imageId = imageFromCategory(selectedCategory),
+                    title = titleEditText.text.toString(),
+                    details = detailsEditText.text.toString(),
+                    price = priceEditText.text.toString().toDouble(),
+                    category = selectedCategory,
+                    postedOn = System.currentTimeMillis())
+            )
+            showAddItemConfirmation()
+        }
     }
 
     /**
@@ -142,5 +143,15 @@ class AddItemActivity : AppCompatActivity(),
 
         return true
     }
+
+    private fun showAddItemConfirmation() {
+        Snackbar.make(addItemRootView, getString(R.string.add_item_successful),
+                Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.ok)) {
+                    navigateBackToItemList()
+                }
+                .show()
+    }
+
 
 }
