@@ -32,7 +32,9 @@ package com.raywenderlich.isell.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.View
 import com.raywenderlich.isell.R
 import com.raywenderlich.isell.adapter.ItemsAdapter
@@ -41,7 +43,17 @@ import com.raywenderlich.isell.data.Item
 import com.raywenderlich.isell.util.DataProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), ItemsAdapter.OnItemClickListener {
+class MainActivity : AppCompatActivity(), ItemsAdapter.OnItemClickListener , BottomNavigationView.OnNavigationItemSelectedListener{
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.nav_laptops -> populateItemList(Category.LAPTOP)
+            R.id.nav_monitores -> populateItemList(Category.MONITOR)
+            R.id.nav_headphones -> populateItemList(Category.HEADPHONE)
+            else -> return false
+        }
+        return true
+    }
 
     override fun onItemClick(item: Item, itemView: View) {
         val detailsIntent = Intent(this, DetailsActivity::class.java)
@@ -66,5 +78,6 @@ class MainActivity : AppCompatActivity(), ItemsAdapter.OnItemClickListener {
         setContentView(R.layout.activity_main)
 
         populateItemList(Category.LAPTOP)
+        bottomNavigationView.setOnNavigationItemSelectedListener(this)
     }
 }
