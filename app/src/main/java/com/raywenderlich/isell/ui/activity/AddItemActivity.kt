@@ -46,76 +46,101 @@ import com.raywenderlich.isell.util.DataProvider
 import kotlinx.android.synthetic.main.activity_add_item.*
 
 class AddItemActivity : AppCompatActivity(),
-    TextWatcher, AdapterView.OnItemSelectedListener {
+        TextWatcher, AdapterView.OnItemSelectedListener {
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_add_item)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_add_item)
 
-    categorySpinner.adapter = ArrayAdapter<Category>(
-        this,
-        android.R.layout.simple_spinner_item,
-        Category.values()
-    )
-    categorySpinner.onItemSelectedListener = this
+        categorySpinner.adapter = ArrayAdapter<Category>(
+                this,
+                android.R.layout.simple_spinner_item,
+                Category.values()
+        )
+        categorySpinner.onItemSelectedListener = this
 
-    titleEditText.addTextChangedListener(this)
-    priceEditText.addTextChangedListener(this)
-    detailsEditText.addTextChangedListener(this)
-  }
+        titleEditText.addTextChangedListener(this)
+        priceEditText.addTextChangedListener(this)
+        detailsEditText.addTextChangedListener(this)
+    }
 
-  /**
-   * Handles Back button press, relaunch MainActivity for reload data
-   */
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      android.R.id.home -> {
-        navigateBackToItemList()
-        return true
+    /**
+     * Handles Back button press, relaunch MainActivity for reload data
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                navigateBackToItemList()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun afterTextChanged(s: Editable?) {}
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+      titleTextInput.error = null
+      priceTextInput.error = null
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        imageButton.setImageResource(imageFromCategory(categorySpinner.selectedItem as Category))
+    }
+
+    fun onClickAddItem(view: View) {
+
+      if(hasValidInput()){
+        val selectedCategory = categorySpinner.selectedItem as Category
+        DataProvider.addItem(Item(
+                imageId = imageFromCategory(selectedCategory),
+                title = titleEditText.text.toString(),
+                details = detailsEditText.text.toString(),
+                price = priceEditText.text.toString().toDouble(),
+                category = selectedCategory,
+                postedOn = System.currentTimeMillis())
+        )
       }
     }
-    return super.onOptionsItemSelected(item)
-  }
 
-  override fun afterTextChanged(s: Editable?) {}
+    /**
+     * Returns image of an item Category
+     */
+    private fun imageFromCategory(category: Category): Int {
+        return when (category) {
+            Category.LAPTOP -> R.drawable.ic_laptop
+            Category.HEADPHONE -> R.drawable.ic_headset
+            else -> R.drawable.ic_monitor
+        }
+    }
 
-  override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    /**
+     * Navigates to MainActivity and reloads data
+     */
+    private fun navigateBackToItemList() {
+        val mainIntent = Intent(this, MainActivity::class.java)
+        mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(mainIntent)
+        finish()
+    }
 
-  override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    private fun hasValidInput(): Boolean {
+        val title = titleEditText.text.toString()
+        if (title.isNullOrBlank()) {
+            titleTextInput.error = "Please enter a valid Title"
+            return false
+        }
+        val price = priceEditText.text.toString().toDoubleOrNull()
+        if (price == null || price <= 0.0) {
+            priceTextInput.error = "Please enter a minimum Price"
+            return false
+        }
 
-  override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-  override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-    imageButton.setImageResource(imageFromCategory(categorySpinner.selectedItem as Category))
-  }
-
-  fun onClickAddItem(view: View) {
-    val selectedCategory = categorySpinner.selectedItem as Category
-    DataProvider.addItem(Item(
-        imageId = imageFromCategory(selectedCategory),
-        title = titleEditText.text.toString(),
-        details = detailsEditText.text.toString(),
-        price = priceEditText.text.toString().toDouble(),
-        category = selectedCategory,
-        postedOn = System.currentTimeMillis())
-    )
-  }
-
-  /**
-   * Returns image of an item Category
-   */
-  private fun imageFromCategory(category: Category): Int {
-    return R.drawable.laptop_1
-  }
-
-  /**
-   * Navigates to MainActivity and reloads data
-   */
-  private fun navigateBackToItemList() {
-    val mainIntent = Intent(this, MainActivity::class.java)
-    mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    startActivity(mainIntent)
-    finish()
-  }
+        return true
+    }
 
 }
