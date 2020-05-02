@@ -1,6 +1,5 @@
 package com.raywenderlich.isell.adapter
 
-import android.support.v7.view.menu.ActionMenuItemView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,24 @@ import com.raywenderlich.isell.R
 import com.raywenderlich.isell.data.Item
 import kotlinx.android.synthetic.main.layout_list_item.view.*
 
-class ItemsAdapter(private val items:List<Item>)
-    :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ItemsAdapter(private val items: List<Item>,
+                   private val clickListener: OnItemClickListener)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
-        fun bind(item:Item) = with(itemView){
+
+    interface OnItemClickListener {
+        fun onItemClick(item: Item, itemView: View)
+    }
+
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(item: Item, listener: OnItemClickListener) = with(itemView) {
             itemTitle.text = item.title
             itemImage.setImageResource(item.imageId)
+            itemPrice.text = item.price.toString() + " $"
+            setOnClickListener{
+                listener.onItemClick(item, it)
+            }
         }
     }
 
@@ -30,6 +40,6 @@ class ItemsAdapter(private val items:List<Item>)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ViewHolder).bind(items[position])
+        (holder as ViewHolder).bind(items[position], clickListener)
     }
 }

@@ -30,31 +30,41 @@
 
 package com.raywenderlich.isell.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.raywenderlich.isell.R
 import com.raywenderlich.isell.adapter.ItemsAdapter
 import com.raywenderlich.isell.data.Category
+import com.raywenderlich.isell.data.Item
 import com.raywenderlich.isell.util.DataProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ItemsAdapter.OnItemClickListener {
 
-
-  private fun populateItemList(category: Category){
-    val items = when(category){
-      Category.LAPTOP -> DataProvider.laptopList
-      Category.MONITOR -> DataProvider.monitorList
-      Category.HEADPHONE -> DataProvider.headphoneList
+    override fun onItemClick(item: Item, itemView: View) {
+        val detailsIntent = Intent(this, DetailsActivity::class.java)
+        detailsIntent.putExtra(getString(R.string.bundle_extra_item), item)
+        startActivity(detailsIntent)
     }
 
-    if(items.isNotEmpty()){
-      item_recycler_view.adapter = ItemsAdapter(items)
-    }
-  }
+    private fun populateItemList(category: Category) {
+        val items = when (category) {
+            Category.LAPTOP -> DataProvider.laptopList
+            Category.MONITOR -> DataProvider.monitorList
+            Category.HEADPHONE -> DataProvider.headphoneList
+        }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
-  }
+        if (items.isNotEmpty()) {
+            item_recycler_view.adapter = ItemsAdapter(items, this)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        populateItemList(Category.LAPTOP)
+    }
 }
