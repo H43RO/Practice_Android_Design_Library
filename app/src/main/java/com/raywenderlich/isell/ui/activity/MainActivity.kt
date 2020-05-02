@@ -80,4 +80,8 @@ class MainActivity : AppCompatActivity(), ItemsAdapter.OnItemClickListener , Bot
         populateItemList(Category.LAPTOP)
         bottomNavigationView.setOnNavigationItemSelectedListener(this)
     }
+
+    fun onClickAddFab(view: View){
+        startActivity(Intent(this, AddItemActivity::class.java))
+    }
 }
