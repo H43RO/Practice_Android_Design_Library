@@ -33,8 +33,25 @@ package com.raywenderlich.isell.ui.activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.raywenderlich.isell.R
+import com.raywenderlich.isell.adapter.ItemsAdapter
+import com.raywenderlich.isell.data.Category
+import com.raywenderlich.isell.util.DataProvider
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+
+  private fun populateItemList(category: Category){
+    val items = when(category){
+      Category.LAPTOP -> DataProvider.laptopList
+      Category.MONITOR -> DataProvider.monitorList
+      Category.HEADPHONE -> DataProvider.headphoneList
+    }
+
+    if(items.isNotEmpty()){
+      item_recycler_view.adapter = ItemsAdapter(items)
+    }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
