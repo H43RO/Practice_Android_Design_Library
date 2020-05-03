@@ -42,42 +42,42 @@ import kotlinx.android.synthetic.main.content_details.*
 
 class DetailsActivity : AppCompatActivity() {
 
-  private var item: Item? = null
+    private var item: Item? = null
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_details)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_details)
 
-    setSupportActionBar(toolBar)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setSupportActionBar(toolBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-    item = intent.getParcelableExtra(getString(R.string.bundle_extra_item))
-    populateDetails(item)
-  }
+        item = intent.getParcelableExtra(getString(R.string.bundle_extra_item))
+        populateDetails(item)
+    }
 
-  /**
-   * Handles click on Share FAB, shares Title and Price of an item
-   */
-  fun onClickShareFab(view: View) {
-    val shareText = item?.title + " for sell @ " + item?.price.toString() + getString(R.string.currency_symbol)
-    val shareIntent = Intent(Intent.ACTION_SEND)
-    shareIntent.type = "text/plain"
-    shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
-    startActivity(shareIntent)
-  }
+    /**
+     * Handles click on Share FAB, shares Title and Price of an item
+     */
+    fun onClickShareFab(view: View) {
+        val shareText = item?.title + " for sell @ " + item?.price.toString() + getString(R.string.currency_symbol)
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
+        startActivity(shareIntent)
+    }
 
-  /**
-   * Binds item details with views
-   */
-  private fun populateDetails(item: Item?) {
-    supportActionBar?.title = item?.category?.name
-    Log.d("test", supportActionBar?.title.toString())
-    itemImageView.setImageResource(item?.imageId!!)
-    priceTextView.text = getString(R.string.currency_symbol) + item?.price.toString()
-    titleTextView.text = item?.title
-    detailsTextView.text = item?.details
+    /**
+     * Binds item details with views
+     */
+    private fun populateDetails(item: Item?) {
+        supportActionBar?.title = item?.category?.name
+        Log.d("test", supportActionBar?.title.toString())
+        itemImageView.setImageResource(item?.imageId!!)
+        priceTextView.text = getString(R.string.currency_symbol) + item?.price.toString()
+        titleTextView.text = item?.title
+        detailsTextView.text = item?.details
 
 
-  }
+    }
 
 }
