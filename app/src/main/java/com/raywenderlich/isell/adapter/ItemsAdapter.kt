@@ -17,7 +17,6 @@ class ItemsAdapter(private val items: List<Item>,
         fun onItemClick(item: Item, itemView: View)
     }
 
-
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Item, listener: OnItemClickListener) = with(itemView) {
             itemTitle.text = item.title

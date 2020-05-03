@@ -33,9 +33,12 @@ package com.raywenderlich.isell.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import com.raywenderlich.isell.R
 import com.raywenderlich.isell.data.Item
+import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.content_details.*
 
 class DetailsActivity : AppCompatActivity() {
 
@@ -44,6 +47,9 @@ class DetailsActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_details)
+
+    setSupportActionBar(toolBar)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     item = intent.getParcelableExtra(getString(R.string.bundle_extra_item))
     populateDetails(item)
@@ -64,6 +70,13 @@ class DetailsActivity : AppCompatActivity() {
    * Binds item details with views
    */
   private fun populateDetails(item: Item?) {
+    supportActionBar?.title = item?.category?.name
+    Log.d("test", supportActionBar?.title.toString())
+    itemImageView.setImageResource(item?.imageId!!)
+    priceTextView.text = getString(R.string.currency_symbol) + item?.price.toString()
+    titleTextView.text = item?.title
+    detailsTextView.text = item?.details
+
 
   }
 
